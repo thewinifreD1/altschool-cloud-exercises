@@ -29,7 +29,8 @@
 
 ## ifconfig
 
-![ifconfig](https://user-images.githubusercontent.com/101622646/190879497-9ab8ba32-a40e-4647-9913-8e17a18ea4fa.png)
+![ifconfig](https://user-images.githubusercontent.com/101622646/190896923-73f16094-b37c-4be8-b90c-c0c18a2cfdf2.png)
+
 
 
 
