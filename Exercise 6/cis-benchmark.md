@@ -75,7 +75,6 @@ package be removed to reduce the potential attack surface.
 Run the following commands to verify isc-dhcp-server is not installed:
 
 `# dpkg -s isc-dhcp-server | grep -E '(Status:|not installed)'`
-
 `dpkg-query: package 'isc-dhcp-server' is not installed and no information is
 available`
 
@@ -90,46 +89,57 @@ root@ubuntu-focal:~#
 
 4
 ### Ensure LDAP server is not installed (Automated)
-Profile Applicability:
- Level 1 - Server
- Level 1 - Workstation
-Description:
+
+### Profile Applicability:
+- Level 1 - Server
+- Level 1 - Workstation
+
+### Description:
 The Lightweight Directory Access Protocol (LDAP) was introduced as a replacement for
 NIS/YP. It is a service that provides a method for looking up information from a central
 database.
-Rationale:
+
+### Rationale:
 If the system will not need to act as an LDAP server, it is recommended that the software be
 removed to reduce the potential attack surface.
-Audit:
+
+### Audit:
 Run the following command to verify slapd is not installed:
-# dpkg -s slapd | grep -E '(Status:|not installed)'
-dpkg-query: package 'slapd' is not installed and no information is available
+
+`# dpkg -s slapd | grep -E '(Status:|not installed)'
+dpkg-query: package 'slapd' is not installed and no information is available`
 
 ### output
 
+```ruby
 root@ubuntu-focal:~# dpkg -s slapd | grep -E '(Status:|not installed)'
 dpkg-query: package 'slapd' is not installed and no information is available
 Use dpkg --info (= dpkg-deb --info) to examine archive files.
 root@ubuntu-focal:~#
-
+```
 
 5
 ### Ensure wireless interfaces are disabled (Automated)
-Profile Applicability:
- Level 1 - Server
- Level 2 - Workstation
-Description:
+
+### Profile Applicability:
+- Level 1 - Server
+- Level 2 - Workstation
+
+### Description:
 Wireless networking is used when wired networks are unavailable. Debian contains a
 wireless tool kit to allow system administrators to configure and use wireless networks.
-Rationale:
+
+### Rationale:
 If wireless is not to be used, wireless devices can be disabled to reduce the potential attack
 surface.
-Impact:
+
+### Impact:
 Many if not all laptop workstations and some desktop workstations will connect via
 wireless requiring these interfaces be enabled.
 
-Audit:
+### Audit:
 Run the following script to verify no wireless interfaces are active on the system:
+
 `#!/bin/bash
 if command -v nmcli >/dev/null 2>&1 ; then
  if nmcli radio all | grep -Eq '\s*\S+\s+disabled\s+\S+\s+disabled\b'; then
@@ -159,6 +169,8 @@ Output should be:
 `Wireless is not enabled`
 
 ### command output
+
+```ruby
 root@ubuntu-focal:~# #!/bin/bash
 root@ubuntu-focal:~# if command -v nmcli >/dev/null 2>&1 ; then
 >  if nmcli radio all | grep -Eq '\s*\S+\s+disabled\s+\S+\s+disabled\b'; then
@@ -188,18 +200,21 @@ bash: command substitution: line 32: syntax error: unexpected end of file
 > fi
 Wireless is not enabled
 root@ubuntu-focal:~#
-
+```
 
 6
 ### Ensure ufw is installed (Automated)
+
 Profile Applicability:
- Level 1 - Server
- Level 1 - Workstation
-Description:
+- Level 1 - Server
+- Level 1 - Workstation
+
+### Description:
 The Uncomplicated Firewall (ufw) is a frontend for iptables and is particularly well-suited
 for host-based firewalls. ufw provides a framework for managing netfilter, as well as a
 command-line interface for manipulating the firewall
-Rationale:
+
+### Rationale:
 A firewall utility is required to configure the Linux kernel's netfilter framework via the
 iptables or nftables back-end.
 The Linux kernel's netfilter framework host-based firewall can protect against threats
@@ -207,89 +222,109 @@ originating from within a corporate network to include malicious mobile code and
 configured software on a host.
 Note: Only one firewall utility should be installed and configured. UFW is dependent on the
 iptables package
-Audit:
+
+### Audit:
 Run the following command to verify that Uncomplicated Firewall (UFW) is installed:
-# dpkg -s ufw | grep 'Status: install'
-Status: install ok installed
+
+`# dpkg -s ufw | grep 'Status: install'
+Status: install ok installed`
 
 ### output
 
+```ruby
 root@ubuntu-focal:~# dpkg -s ufw | grep 'Status: install'
 Status: install ok installed
 root@ubuntu-focal:~#
-
+```
 
 7
 ### Ensure cron daemon is enabled and running (Automated)
-Profile Applicability:
- Level 1 - Server
- Level 1 - Workstation
-Description:
+
+### Profile Applicability:
+- Level 1 - Server
+- Level 1 - Workstation
+
+### Description:
 The cron daemon is used to execute batch jobs on the system.
 Note: Other methods, such as systemd timers, exist for scheduling jobs. If another method is
 used, cron should be removed, and the alternate method should be secured in accordance
 with local site policy
-Rationale:
+
+### Rationale:
 While there may not be user jobs that need to be run on the system, the system does have
 maintenance jobs that may include security monitoring that have to run, and cron is used
 to execute them.
-Audit:
+
+### Audit:
 Run the following command to verify cron is enabled:
-# systemctl is-enabled cron
-enabled
 
-##output
+`# systemctl is-enabled cron
+enabled`
 
+### output
+
+```ruby
 root@ubuntu-focal:~# systemctl is-enabled cron
 enabled
 root@ubuntu-focal:~# 
-
+```
 
 8
-Ensure cron is restricted to authorized users (Automated)
-Profile Applicability:
- Level 1 - Server
- Level 1 - Workstation
-Description:
+### Ensure cron is restricted to authorized users (Automated)
+
+### Profile Applicability:
+- Level 1 - Server
+- Level 1 - Workstation
+
+### Description:
 Configure /etc/cron.allow to allow specific users to use this service. If /etc/cron.allow
 does not exist, then /etc/cron.deny is checked. Any user not specifically defined in this file
 is allowed to use cron. By removing the file, only users in /etc/cron.allow are allowed to
 use cron.
 Notes:
- Other methods, such as systemd timers, exist for scheduling jobs. If another method is
+- Other methods, such as systemd timers, exist for scheduling jobs. If another method is
 used, cron should be removed, and the alternate method should be secured in
 accordance with local site policy
- Even though a given user is not listed in cron.allow, cron jobs can still be run as that
+- Even though a given user is not listed in cron.allow, cron jobs can still be run as that
 user
- The cron.allow file only controls administrative access to the crontab command for
+- The cron.allow file only controls administrative access to the crontab command for
 scheduling and modifying cron jobs
-Rationale:
+
+### Rationale:
 On many systems, only the system administrator is authorized to schedule cron jobs. Using
 the cron.allow file to control who can run cron jobs enforces this policy. It is easier to
 manage an allow list than a deny list. In a deny list, you could potentially add a user ID to
 the system and forget to add it to the deny files.
 
-Audit:
+### Audit:
 Run the following command and verify that /etc/cron.deny does not exist:
-# stat /etc/cron.deny
-stat: cannot stat `/etc/cron.deny': No such file or directory
 
-## output
-oot@ubuntu-focal:~# stat /etc/cron.deny
+`# stat /etc/cron.deny
+stat: cannot stat `/etc/cron.deny': No such file or directory`
+
+### output
+
+```ruby
+root@ubuntu-focal:~# stat /etc/cron.deny
 stat: cannot stat '/etc/cron.deny': No such file or directory
 root@ubuntu-focal:~# 
+```
+
 
 9
-## Ensure sudo is installed (Automated)
-Profile Applicability:
- Level 1 - Server
- Level 1 - Workstation
-Description:
+### Ensure sudo is installed (Automated)
+
+### Profile Applicability:
+- Level 1 - Server
+- Level 1 - Workstation
+
+### Description:
 sudo allows a permitted user to execute a command as the superuser or another user, as
 specified by the security policy. The invoking user's real (not effective) user ID is used to
 determine the user name with which to query the security policy.
 Note: Use the sudo-ldap package if you need LDAP support for sudoers
-Rationale:
+
+### Rationale:
 sudo supports a plugin architecture for security policies and input/output logging. Third
 parties can develop and distribute their own policy and I/O logging plugins to work
 seamlessly with the sudo front end. The default security policy is sudoers, which is
@@ -298,12 +333,16 @@ The security policy determines what privileges, if any, a user has to run sudo. 
 may require that users authenticate themselves with a password or another authentication
 mechanism. If authentication is required, sudo will exit if the user's password is not
 entered within a configurable time limit. This limit is policy-specific.
-Audit:
+
+### Audit:
 Verify that sudo in installed.
 Run the following command and inspect the output to confirm that sudo is installed:
-# dpkg -s sudo
+
+`# dpkg -s sudo`
 
 ## output
+
+```ruby
 root@ubuntu-focal:~# dpkg -s sudo
 Package: sudo
 Status: install ok installed
@@ -330,23 +369,31 @@ Description: Provide limited super user privileges to specific users
 Homepage: http://www.sudo.ws/
 Original-Maintainer: Bdale Garbee <bdale@gag.com>
 root@ubuntu-focal:~#
-
+```
 
 10
 ### Ensure /var/tmp partition includes the nodev option (Automated)
-Profile Applicability:
- Level 1 - Server
- Level 1 - Workstation
-Description:
+
+### Profile Applicability:
+- Level 1 - Server
+- Level 1 - Workstation
+
+### Description:
 The nodev mount option specifies that the filesystem cannot contain special devices.
-Rationale:
+
+### Rationale:
 Since the /var/tmp filesystem is not intended to support devices, set this option to ensure
 that users cannot attempt to create block or character special devices in /var/tmp .
-Audit:
+
+### Audit:
 If a /var/tmp partition exists, verify that the nodev option is set.
 Run the following command and verify that nothing is returned:
-# findmnt -n /var/tmp | grep -v nodev
 
-output
+`# findmnt -n /var/tmp | grep -v nodev`
+
+### output
+
+```ruby
 root@ubuntu-focal:/home/vagrant# findmnt -n /var/tmp | grep -v nodev
 root@ubuntu-focal:/home/vagrant#
+```
