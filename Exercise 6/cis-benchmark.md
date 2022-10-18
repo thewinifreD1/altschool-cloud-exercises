@@ -1,3 +1,11 @@
+## Exercise 6
+### Task: 
+* Review the CIS benchmark for ubuntu, and try to implement at least 10 of the recommendations that we made within the benchmark.
+
+### Instruction:
+  -  
+
+
 1
 ## Ensure nodev option set on /tmp partition (Automated)
 
