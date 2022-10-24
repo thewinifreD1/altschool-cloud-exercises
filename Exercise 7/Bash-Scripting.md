@@ -35,3 +35,4 @@
 
 ## sample of the email sent
 
+![EMAIL SAMPLE](https://user-images.githubusercontent.com/101622646/197494414-e4186ee0-7c4a-450a-bd8f-bea2092b1a5d.png)
